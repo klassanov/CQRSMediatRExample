@@ -26,6 +26,12 @@ namespace CQRSMediatRExample.Persistence
             return await Task.FromResult(products);
         }
 
+        public async Task<Product> GetProductById(int id)
+        {
+            var product = products.First(p => p.Id == id);
+            return await Task.FromResult(product);
+        }
+
         public async Task EventOccurred(Product product, string evt)
         {
             products.Single(p => p.Id == product.Id).Name = $"{product.Name} evt: {evt}";

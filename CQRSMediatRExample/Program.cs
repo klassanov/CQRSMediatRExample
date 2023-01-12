@@ -6,7 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddMediatR(typeof(Program));
+//Register all handlers and pre/post-processors in a given assembly
+builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+
 builder.Services.AddSingleton<FakeDbStore>();
 
 builder.Services.AddControllers();

@@ -26,14 +26,25 @@ namespace CQRSMediatRExample.Controllers
             return Ok(products);
         }
 
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult> GetProductById(int id)
+        {
+            var product = await this.mediator.Send(new GetProductByIdQuery(id));
+            return Ok(product);
+        }
+
         [HttpPost]
         public async Task<ActionResult> PostProduct([FromBody] Product p)
         {
             var result = await this.mediator.Send(new AddProductCommand(p));
 
-            // this.mediator.Publish(new ProductAddedNotification())
+            await this.mediator.Publish(new ProductAddedNotification(result));
 
-            return CreatedAtRoute(null, new { Id = result.Id }, result);
+            //Does not require  Name = "GetProductById" above GetProductById method, but even if there is a name, it doesn't bother
+            return CreatedAtAction(nameof(GetProductById), new { Id = result.Id }, result);
+
+            //Requires Name = "GetProductById" above GetProductById method
+            //return CreatedAtRoute(nameof(GetProductById), new { Id = result.Id }, result);
         }
     }
 }
