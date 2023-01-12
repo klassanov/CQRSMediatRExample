@@ -1,4 +1,5 @@
 using System.Reflection;
+using CQRSMediatRExample.Behaviors;
 using CQRSMediatRExample.Persistence;
 using MediatR;
 
@@ -10,6 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 
 builder.Services.AddSingleton<FakeDbStore>();
+
+//The <,>  notation means that the pipeline behavior can be used by any generic tpe parameters
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(DoNothingBehaviour<,>));
+builder.Services.AddSingleton(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
 builder.Services.AddControllers();
 
